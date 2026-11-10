@@ -1,0 +1,48 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Solution {
+public:
+    void sortEvenOdd(std::vector<int>& nums) {
+        int n = nums.size();
+        int i = 0, j = n - 1;
+        while (i <= j) {
+            while (i <= j && nums[i] % 2 == 0) {
+                i++;
+            }
+            while (i <= j && nums[j] % 2 != 0) {
+                j--;
+            }
+            if (i < j) {
+                std::swap(nums[i], nums[j]);
+                i++;
+                j--;
+            }
+        }
+        std::sort(nums.begin(), nums.begin() + i);
+        std::sort(nums.begin() + i, nums.end(), std::greater<int>());
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
+    int n;
+    if (!(std::cin >> n)) return 0;
+
+    std::vector<int> nums(n);
+    for (int k = 0; k < n; ++k) {
+        std::cin >> nums[k];
+    }
+
+    Solution solution;
+    solution.sortEvenOdd(nums);
+    for (int k = 0; k < n; ++k) {
+        std::cout << nums[k] << (k + 1 == n ? "" : " ");
+    }
+    std::cout << "\n";
+
+    return 0;
+}
