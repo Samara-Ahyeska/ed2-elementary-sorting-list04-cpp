@@ -1,0 +1,72 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class Solution {
+private:
+       int lomutoPartition(std::vector<int>& nums, int low, int high, long long& swapCount) {
+        int pivot = nums[high];
+        int i = low;
+        for (int j = low; j < high; ++j) {
+            if (nums[j] <= pivot) {
+                if (i != j) {
+                    std::swap(nums[i], nums[j]);
+                    swapCount++;
+                }
+                i++;
+            }
+        }
+        
+        if (i != high) {
+            std::swap(nums[i], nums[high]);
+            swapCount++;
+        }
+
+        return i;
+    }
+    int quickSelect(std::vector<int>& nums, int low, int high, int k, long long& swapCount) {
+        if (low <= high) {
+            int pivotIndex = lomutoPartition(nums, low, high, swapCount);
+            if (pivotIndex == k) {
+                return nums[pivotIndex];
+            } else if (pivotIndex > k) {
+                return quickSelect(nums, low, pivotIndex - 1, k, swapCount);
+            } else {
+                return quickSelect(nums, pivotIndex + 1, high, k, swapCount);
+            }
+        }
+        return -1;
+    }
+
+public:
+    int findKthLargest(std::vector<int>& nums, int k, long long& swapCount) {
+        int n = nums.size();
+        int targetIndex = n - k; 
+        return quickSelect(nums, 0, n - 1, targetIndex, swapCount);
+    }
+};
+
+int main() {
+    std::ios_base::sync_with_stdio(false);
+    std::cin.tie(NULL);
+
+    int n, k;
+    if (!(std::cin >> n >> k)) return 0;
+
+    std::vector<int> nums(n);
+    for (int i = 0; i < n; ++i) {
+        std::cin >> nums[i];
+    }
+
+    Solution solution;
+    long long swapCount = 0;    
+    int kthLargest = solution.findKthLargest(nums, k, swapCount);
+    std::cout << kthLargest << "\n";
+    for (int i = 0; i < n; ++i) {
+        std::cout << nums[i] << (i + 1 == n ? "" : " ");
+    }
+    std::cout << "\n";
+    std::cout << swapCount << "\n";
+
+    return 0;
+}
